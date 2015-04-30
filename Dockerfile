@@ -1,7 +1,22 @@
-FROM ubuntu:14.10
+## Proftpd saim docker file
+FROM phusion/baseimage
 
+MAINTAINER Edwin Urquilla <edwin.urquilla@gmail.com>
+
+# Set correct environment variables.
+#ENV HOME /root
 ENV DEBIAN_FRONTEND noninteractive
-RUN locale-gen en_GB en_GB.UTF-8 && dpkg-reconfigure locales
+
+# Regenerate SSH host keys. baseimage-docker does not contain any, so you
+# have to do that yourself. You may also comment out this instruction; the
+# init system will auto-generate one during boot.
+#RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+RUN rm -f /etc/service/sshd/down
+RUN /usr/sbin/enable_insecure_key
 
 # Prerequisites
 RUN apt-get update && apt-get install -y \
